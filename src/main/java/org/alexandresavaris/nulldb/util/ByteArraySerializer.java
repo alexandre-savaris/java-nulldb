@@ -11,14 +11,17 @@ import java.io.IOException;
 public class ByteArraySerializer extends JsonSerializer<byte[]> {
 
     @Override
-    public void serialize(byte[] bytes, JsonGenerator jgen, SerializerProvider provider)
-            throws IOException {
+    public void serialize(
+        byte[] bytes,
+        JsonGenerator jsonGenerator,
+        SerializerProvider provider
+    ) throws IOException {
 
-        jgen.writeStartArray();
+        jsonGenerator.writeStartArray();
         for (byte b : bytes) {
-            jgen.writeNumber(unsignedToBytes(b));
+            jsonGenerator.writeNumber(unsignedToBytes(b));
         }
-        jgen.writeEndArray();
+        jsonGenerator.writeEndArray();
     }
 
     private static int unsignedToBytes(byte b) {

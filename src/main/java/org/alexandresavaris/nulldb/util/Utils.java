@@ -1,9 +1,5 @@
 package org.alexandresavaris.nulldb.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.alexandresavaris.nulldb.pojo.Entry;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,5 +24,25 @@ public class Utils {
         properties.load(new FileInputStream(appConfigPath));
 
         return properties;
+    }
+
+    // Get the database path based on path + file name.
+    // If it doesn't exist, create it.
+    public static Path getDatabasePath(String strDbPath, String strFileName)
+            throws IOException {
+
+        // Verify the existence/create the database path.
+        Path dbPath = Path.of(strDbPath);
+        if (Files.notExists(dbPath)) {
+            Files.createDirectory(dbPath);
+        }
+
+        // Verify the existence/create the database file.
+        Path dbFilePath = Paths.get(strDbPath, strFileName);
+        if (Files.notExists(dbFilePath)) {
+            Files.createFile(dbFilePath);
+        }
+
+        return dbFilePath;
     }
 }

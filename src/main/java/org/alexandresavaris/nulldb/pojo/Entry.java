@@ -3,8 +3,9 @@ package org.alexandresavaris.nulldb.pojo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 
+// A database entry (key-value pair).
 public class Entry {
     @JsonProperty("key")
     private byte[] key;
@@ -20,13 +21,19 @@ public class Entry {
         this.value = value;
     }
 
-    @JsonSerialize(using=org.alexandresavaris.nulldb.util.ByteArraySerializer.class)
+    // For serialization, use the attribute's unsigned numeric representation.
+    @JsonSerialize(
+        using=org.alexandresavaris.nulldb.util.ByteArraySerializer.class
+    )
     public byte[] getKey() {
 
         return key;
     }
 
-    @JsonSerialize(using=org.alexandresavaris.nulldb.util.ByteArraySerializer.class)
+    // For serialization, use the attribute's unsigned numeric representation.
+    @JsonSerialize(
+        using=org.alexandresavaris.nulldb.util.ByteArraySerializer.class
+    )
     public byte[] getValue() {
 
         return value;
@@ -43,8 +50,8 @@ public class Entry {
     @Override
     public String toString() {
         return "Entry{" +
-                "key=" + Arrays.toString(key) +
-                ", value=" + Arrays.toString(value) +
+                "key=" + new String(this.key, StandardCharsets.UTF_8) +
+                ", value=" + new String(this.value, StandardCharsets.UTF_8) +
                 '}';
     }
 }

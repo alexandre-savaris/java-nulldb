@@ -1,7 +1,7 @@
 package org.alexandresavaris.nulldb;
 
 import org.alexandresavaris.nulldb.pojo.Entry;
-import org.alexandresavaris.nulldb.service.DbService;
+import org.alexandresavaris.nulldb.dao.EntryDao;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,13 +9,8 @@ import org.springframework.context.annotation.Bean;
 
 import org.alexandresavaris.nulldb.util.Utils;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Properties;
 
 @SpringBootApplication
@@ -31,31 +26,42 @@ public class NulldbApplication {
 
 		return runner -> {
 			final Properties properties = Utils.loadProperties();
-			final Path dbFilePath = DbService.createDatabase(
+			final Path dbFilePath = Utils.getDatabasePath(
 				properties.getProperty("db.path"),
 				properties.getProperty("db.fileName")
 			);
-			DbService.put(
+			EntryDao.put(
 					dbFilePath,
-					"foo".getBytes(StandardCharsets.UTF_8),
-					"bar".getBytes(StandardCharsets.UTF_8)
+					new Entry(
+						"foo".getBytes(StandardCharsets.UTF_8),
+						"bar".getBytes(StandardCharsets.UTF_8)
+					)
 			);
-			DbService.put(
+			EntryDao.put(
 					dbFilePath,
-					"baz".getBytes(StandardCharsets.UTF_8),
-					"qux".getBytes(StandardCharsets.UTF_8)
+					new Entry(
+						"baz".getBytes(StandardCharsets.UTF_8),
+						"qux".getBytes(StandardCharsets.UTF_8)
+					)
 			);
-			DbService.put(
+			EntryDao.put(
 					dbFilePath,
-					"foo".getBytes(StandardCharsets.UTF_8),
-					"goo".getBytes(StandardCharsets.UTF_8)
+					new Entry(
+						"foo".getBytes(StandardCharsets.UTF_8),
+						"goo".getBytes(StandardCharsets.UTF_8)
+					)
 			);
 			Entry entry
-				= DbService.get(
+				= EntryDao.get(
 					dbFilePath,
 					"foo".getBytes(StandardCharsets.UTF_8)
 				);
-			System.out.println("Entry: key = " + Arrays.toString(entry.getKey()) + " | value = " + Arrays.toString(entry.getValue()));
+			System.out.println(
+				"Entry: key = "
+					+ new String(entry.getKey(), StandardCharsets.UTF_8)
+				+ " | value = "
+					+ new String(entry.getValue(), StandardCharsets.UTF_8)
+			);
 		};
 	}
 }
