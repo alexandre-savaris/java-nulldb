@@ -40,15 +40,18 @@ public class Entry {
     }
 
     public void setKey(byte[] key) {
+
         this.key = key;
     }
 
     public void setValue(byte[] value) {
+
         this.value = value;
     }
 
     @Override
     public String toString() {
+
         return "Entry{" +
                 "key=" + new String(this.key, StandardCharsets.UTF_8) +
                 ", value=" + new String(this.value, StandardCharsets.UTF_8) +
