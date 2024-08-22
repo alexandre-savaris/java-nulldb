@@ -20,6 +20,9 @@ public class EntryTest {
     // For accessing the on-disk and in-memory database structures.
     @Autowired
     private DbBean dbBean;
+    // For executing operations on Entry instances.
+    @Autowired
+    private EntryDao entryDao;
     // Entries used for the tests.
     private Entry entry1
         = new Entry(
@@ -42,15 +45,11 @@ public class EntryTest {
         );
 
         assertDoesNotThrow(() -> {
-            EntryDao.put(this.dbBean.getDbFilePath(), this.entry1);
+            this.entryDao.put(this.entry1);
         });
 
         assertDoesNotThrow(() -> {
-            this.retrievedEntry
-                = EntryDao.get(
-                    this.dbBean.getDbFilePath(),
-                    this.entry1.getKey()
-                );
+            this.retrievedEntry = this.entryDao.get(this.entry1.getKey());
         });
 
         assertEquals(this.entry1.toString(), this.retrievedEntry.toString());
