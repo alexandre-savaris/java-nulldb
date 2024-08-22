@@ -1,9 +1,8 @@
 package org.alexandresavaris.nulldb;
 
+import org.alexandresavaris.nulldb.bean.DbBean;
 import org.alexandresavaris.nulldb.dao.EntryDao;
 import org.alexandresavaris.nulldb.pojo.Entry;
-import org.alexandresavaris.nulldb.service.PropertiesLoader;
-import org.alexandresavaris.nulldb.util.Utils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,11 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @TestPropertySource("classpath:test.properties")
 public class EntryTest {
-    // For the application properties.
+    // For accessing the on-disk and in-memory database structures.
     @Autowired
-    private PropertiesLoader propertiesLoader;
-    // The database path for the tests.
-    private Path dbFilePath = null;
+    private DbBean dbBean;
     // Entries used for the tests.
     private Entry entry1
         = new Entry(
@@ -35,31 +32,23 @@ public class EntryTest {
     public void putAndGetTheSameEntryFromTheDatabase() {
 
         assertNotNull(
-            this.propertiesLoader.getDbPath(),
+            this.dbBean.getDbPath(),
             () -> "The property 'db.path' shall not be null!"
         );
 
         assertNotNull(
-            this.propertiesLoader.getDbFileName(),
+            this.dbBean.getDbFileName(),
             () -> "The property 'db.fileName' shall not be null!"
         );
 
         assertDoesNotThrow(() -> {
-            this.dbFilePath
-                = Utils.getDatabasePath(
-                this.propertiesLoader.getDbPath(),
-                this.propertiesLoader.getDbFileName()
-            );
-        });
-
-        assertDoesNotThrow(() -> {
-            EntryDao.put(this.dbFilePath, this.entry1);
+            EntryDao.put(this.dbBean.getDbFilePath(), this.entry1);
         });
 
         assertDoesNotThrow(() -> {
             this.retrievedEntry
                 = EntryDao.get(
-                    this.dbFilePath,
+                    this.dbBean.getDbFilePath(),
                     this.entry1.getKey()
                 );
         });
@@ -68,7 +57,7 @@ public class EntryTest {
 
         assertDoesNotThrow(() -> {
             FileSystemUtils.deleteRecursively(
-                Path.of(this.propertiesLoader.getDbPath())
+                Path.of(this.dbBean.getDbPath())
             );
         });
     }

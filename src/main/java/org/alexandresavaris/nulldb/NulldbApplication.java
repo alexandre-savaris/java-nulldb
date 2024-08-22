@@ -1,24 +1,21 @@
 package org.alexandresavaris.nulldb;
 
+import org.alexandresavaris.nulldb.bean.DbBean;
 import org.alexandresavaris.nulldb.pojo.Entry;
 import org.alexandresavaris.nulldb.dao.EntryDao;
-import org.alexandresavaris.nulldb.service.PropertiesLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import org.alexandresavaris.nulldb.util.Utils;
-
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 
 @SpringBootApplication
 public class NulldbApplication {
-	// For the application properties.
+	// For accessing the on-disk and in-memory database structures.
 	@Autowired
-	PropertiesLoader propertiesLoader;
+	private DbBean dbBean;
 
 	public static void main(String[] args) {
 
@@ -29,26 +26,22 @@ public class NulldbApplication {
 	public CommandLineRunner commandLineRunner() {
 
 		return runner -> {
-			final Path dbFilePath = Utils.getDatabasePath(
-				propertiesLoader.getDbPath(),
-				propertiesLoader.getDbFileName()
-			);
 			EntryDao.put(
-				dbFilePath,
+				dbBean.getDbFilePath(),
 				new Entry(
 					"foo".getBytes(StandardCharsets.UTF_8),
 					"bar".getBytes(StandardCharsets.UTF_8)
 				)
 			);
 			EntryDao.put(
-				dbFilePath,
+				dbBean.getDbFilePath(),
 				new Entry(
 					"baz".getBytes(StandardCharsets.UTF_8),
 					"qux".getBytes(StandardCharsets.UTF_8)
 				)
 			);
 			EntryDao.put(
-				dbFilePath,
+				dbBean.getDbFilePath(),
 				new Entry(
 					"foo".getBytes(StandardCharsets.UTF_8),
 					"goo".getBytes(StandardCharsets.UTF_8)
@@ -56,7 +49,7 @@ public class NulldbApplication {
 			);
 			Entry entry
 				= EntryDao.get(
-					dbFilePath,
+					dbBean.getDbFilePath(),
 					"foo".getBytes(StandardCharsets.UTF_8)
 				);
 			System.out.println(
