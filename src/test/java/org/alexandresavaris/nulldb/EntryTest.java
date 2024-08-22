@@ -6,6 +6,7 @@ import org.alexandresavaris.nulldb.pojo.Entry;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.FileSystemUtils;
 
@@ -15,6 +16,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @TestPropertySource("classpath:test.properties")
 public class EntryTest {
     // For accessing the on-disk and in-memory database structures.
